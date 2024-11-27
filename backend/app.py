@@ -5,8 +5,9 @@ from flask_restx import Api, Resource, fields
 
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for frontend-backend communication
+CORS(app)  # Enable CORS for the frontend-backend communication
 api = Api(app)  # Initialize Flask-RESTX API
+
 
 # Define the Feedback model using Flask-RESTX's fields
 feedback_model = api.model('Feedback', {
