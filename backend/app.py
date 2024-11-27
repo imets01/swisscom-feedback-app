@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import sqlite3
 from flask_cors import CORS
 from flask_restx import Api, Resource, fields
-from http import HTTPStatus
+
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for frontend-backend communication

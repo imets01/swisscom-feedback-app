@@ -3,6 +3,5 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/backend" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/swisscom-feedback-app" vcs="Git" />
   </component>
 </project>
