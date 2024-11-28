@@ -1,9 +1,19 @@
-import FeedbackForm from "./components/feedbackForm";
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 export default function Home() {
   return (
-    <div>
-      <FeedbackForm />
-    </div>
-  );
+    <main className="flex min-h-screen flex-col items-center justify-center p-24">
+      <h1 className="text-4xl font-bold mb-8">Interview Feedback System</h1>
+      <div className="flex gap-4">
+        <Link href="/feedback">
+          <Button>Submit Feedback</Button>
+        </Link>
+        <Link href="/admin">
+          <Button variant="outline">Admin Dashboard</Button>
+        </Link>
+      </div>
+    </main>
+  )
 }
+
