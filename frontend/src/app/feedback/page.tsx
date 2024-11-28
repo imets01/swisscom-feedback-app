@@ -1,80 +1,55 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Textarea } from "@/components/ui/textarea";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
+import { Button } from "@/components/ui/button"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Textarea } from "@/components/ui/textarea"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
+import { format } from "date-fns"
+import { CalendarIcon } from 'lucide-react'
 
 const formSchema = z.object({
-  full_name: z.string().optional().or(z.literal("")),
-  email: z.string().email().optional().or(z.literal("")),
-  phone: z.string().optional().or(z.literal("")),
+  full_name: z.string().optional(),
+  email: z.string().email().optional(),
+  phone: z.string().optional(),
   contact_permission: z.boolean().default(false),
   role: z.string(),
   interview_date: z.date(),
-  interview_type: z.string().or(z.literal("")),
+  interview_type: z.string(),
   interview_mode: z.enum(["In-Person", "Virtual", "Phone"]),
   rating_experience: z.number().min(1).max(5),
   rating_professionalism: z.number().min(1).max(5),
   difficulty: z.enum(["Easy", "Moderate", "Difficult"]),
   description_clear: z.boolean(),
-  liked: z.string().optional().or(z.literal("")),
-  improved: z.string().optional().or(z.literal("")),
+  liked: z.string().optional(),
+  improved: z.string().optional(),
   recommendation: z.enum(["Definitely", "Maybe", "No"]),
-  heard_about: z.string().optional().or(z.literal("")),
-});
+  heard_about: z.string().optional(),
+})
 
 export default function FeedbackForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<
-    "idle" | "success" | "error"
-  >("idle");
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      full_name: "",
-      email: "",
-      phone: "",
-      interview_type: "",
-      liked: "",
-      improved: "",
-      heard_about: "",
+      contact_permission: false,
+      description_clear: false,
     },
-  });
+  })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsSubmitting(true);
-    setSubmitStatus("idle");
+    setIsSubmitting(true)
+    setSubmitStatus("idle")
 
     try {
       const response = await fetch("http://localhost:5000/feedback", {
@@ -83,18 +58,18 @@ export default function FeedbackForm() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(values),
-      });
+      })
 
       if (response.ok) {
-        setSubmitStatus("success");
-        form.reset();
+        setSubmitStatus("success")
+        form.reset()
       } else {
-        setSubmitStatus("error");
+        setSubmitStatus("error")
       }
     } catch (error) {
-      setSubmitStatus("error");
+      setSubmitStatus("error")
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
   }
 
@@ -108,7 +83,7 @@ export default function FeedbackForm() {
             name="full_name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Your Full Name (Optional)</FormLabel>
+                <FormLabel>Full Name (Optional)</FormLabel>
                 <FormControl>
                   <Input placeholder="John Doe" {...field} />
                 </FormControl>
@@ -122,11 +97,7 @@ export default function FeedbackForm() {
               <FormItem>
                 <FormLabel>Email Address (Optional)</FormLabel>
                 <FormControl>
-                  <Input
-                    type="email"
-                    placeholder="john@example.com"
-                    {...field}
-                  />
+                  <Input type="email" placeholder="john@example.com" {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -158,17 +129,13 @@ export default function FeedbackForm() {
                       <FormControl>
                         <RadioGroupItem value="true" />
                       </FormControl>
-                      <FormLabel className="font-normal">
-                        Yes, you can contact me about my feedback
-                      </FormLabel>
+                      <FormLabel className="font-normal">Yes, you can contact me about my feedback</FormLabel>
                     </FormItem>
                     <FormItem className="flex items-center space-x-3 space-y-0">
                       <FormControl>
                         <RadioGroupItem value="false" />
                       </FormControl>
-                      <FormLabel className="font-normal">
-                        No, please don't contact me
-                      </FormLabel>
+                      <FormLabel className="font-normal">No, please don't contact me</FormLabel>
                     </FormItem>
                   </RadioGroup>
                 </FormControl>
@@ -181,25 +148,16 @@ export default function FeedbackForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Role Interviewed For</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a role" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="Software Engineer Intern">
-                      Software Engineer Intern
-                    </SelectItem>
-                    <SelectItem value="Data Scientist">
-                      Data Scientist
-                    </SelectItem>
-                    <SelectItem value="Product Manager">
-                      Product Manager
-                    </SelectItem>
+                    <SelectItem value="Software Engineer Intern">Software Engineer Intern</SelectItem>
+                    <SelectItem value="Data Scientist">Data Scientist</SelectItem>
+                    <SelectItem value="Product Manager">Product Manager</SelectItem>
                     <SelectItem value="UX Designer">UX Designer</SelectItem>
                   </SelectContent>
                 </Select>
@@ -254,26 +212,17 @@ export default function FeedbackForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Type of Interview</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select interview type" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="Technical Interview">
-                      Technical Interview
-                    </SelectItem>
+                    <SelectItem value="Technical Interview">Technical Interview</SelectItem>
                     <SelectItem value="HR Interview">HR Interview</SelectItem>
-                    <SelectItem value="Behavioral Interview">
-                      Behavioral Interview
-                    </SelectItem>
-                    <SelectItem value="Group Interview">
-                      Group Interview
-                    </SelectItem>
+                    <SelectItem value="Behavioral Interview">Behavioral Interview</SelectItem>
+                    <SelectItem value="Group Interview">Group Interview</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -331,27 +280,19 @@ export default function FeedbackForm() {
                     {[1, 2, 3, 4, 5].map((rating) => (
                       <FormItem key={rating}>
                         <FormControl>
-                          <RadioGroupItem
-                            value={rating.toString()}
-                            className="sr-only"
-                          />
+                          <RadioGroupItem value={rating.toString()} className="sr-only" />
                         </FormControl>
-                        <FormLabel
-                          className={cn(
-                            "cursor-pointer rounded-md p-2 hover:bg-accent",
-                            field.value === rating &&
-                              "bg-primary text-primary-foreground hover:bg-primary"
-                          )}
-                        >
+                        <FormLabel className={cn(
+                          "cursor-pointer rounded-md p-2 hover:bg-accent",
+                          field.value === rating && "bg-primary text-primary-foreground hover:bg-primary"
+                        )}>
                           {rating}
                         </FormLabel>
                       </FormItem>
                     ))}
                   </RadioGroup>
                 </FormControl>
-                <FormDescription>
-                  Rate your overall experience (1-5)
-                </FormDescription>
+                <FormDescription>Rate your overall experience (1-5)</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -371,27 +312,19 @@ export default function FeedbackForm() {
                     {[1, 2, 3, 4, 5].map((rating) => (
                       <FormItem key={rating}>
                         <FormControl>
-                          <RadioGroupItem
-                            value={rating.toString()}
-                            className="sr-only"
-                          />
+                          <RadioGroupItem value={rating.toString()} className="sr-only" />
                         </FormControl>
-                        <FormLabel
-                          className={cn(
-                            "cursor-pointer rounded-md p-2 hover:bg-accent",
-                            field.value === rating &&
-                              "bg-primary text-primary-foreground hover:bg-primary"
-                          )}
-                        >
+                        <FormLabel className={cn(
+                          "cursor-pointer rounded-md p-2 hover:bg-accent",
+                          field.value === rating && "bg-primary text-primary-foreground hover:bg-primary"
+                        )}>
                           {rating}
                         </FormLabel>
                       </FormItem>
                     ))}
                   </RadioGroup>
                 </FormControl>
-                <FormDescription>
-                  Rate the interviewer's professionalism (1-5)
-                </FormDescription>
+                <FormDescription>Rate the interviewer's professionalism (1-5)</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -402,10 +335,7 @@ export default function FeedbackForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Interview Difficulty</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select difficulty" />
@@ -425,8 +355,7 @@ export default function FeedbackForm() {
             control={form.control}
             name="description_clear"
             render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>Was the job description clear?</FormLabel>
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                 <FormControl>
                   <RadioGroup
                     onValueChange={(value) => field.onChange(value === "true")}
@@ -437,32 +366,25 @@ export default function FeedbackForm() {
                       <FormControl>
                         <RadioGroupItem value="true" />
                       </FormControl>
-                      <FormLabel className="font-normal">
-                        Yes, it was clear
-                      </FormLabel>
+                      <FormLabel className="font-normal">Yes, the job description was clear</FormLabel>
                     </FormItem>
                     <FormItem className="flex items-center space-x-3 space-y-0">
                       <FormControl>
                         <RadioGroupItem value="false" />
                       </FormControl>
-                      <FormLabel className="font-normal">
-                        No, it was not clear
-                      </FormLabel>
+                      <FormLabel className="font-normal">No, the job description was not clear</FormLabel>
                     </FormItem>
                   </RadioGroup>
                 </FormControl>
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="liked"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  What did you like about the interview process?
-                </FormLabel>
+                <FormLabel>What did you like about the interview process?</FormLabel>
                 <FormControl>
                   <Textarea
                     placeholder="Tell us what you liked..."
@@ -498,8 +420,7 @@ export default function FeedbackForm() {
               <FormItem className="space-y-3">
                 <FormLabel>Would you recommend Swisscom?</FormLabel>
                 <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange} // Corrected from `ValueChange` to `onValueChange`
+                  ValueChange={field.onChange}
                     defaultValue={field.value}
                     className="flex flex-col space-y-1"
                   >
@@ -527,7 +448,6 @@ export default function FeedbackForm() {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="heard_about"
@@ -550,10 +470,9 @@ export default function FeedbackForm() {
         <p className="mt-4 text-green-600">Feedback submitted successfully!</p>
       )}
       {submitStatus === "error" && (
-        <p className="mt-4 text-red-600">
-          An error occurred. Please try again.
-        </p>
+        <p className="mt-4 text-red-600">An error occurred. Please try again.</p>
       )}
     </div>
-  );
+  )
 }
+

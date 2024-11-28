@@ -1,83 +1,67 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Pie } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Pie } from "react-chartjs-2"
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js"
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend)
 
 interface Feedback {
-  id: number;
-  full_name: string;
-  role: string;
-  interview_date: string;
-  rating_experience: number;
-  interview_mode: string;
+  id: number
+  full_name: string
+  role: string
+  interview_date: string
+  rating_experience: number
+  interview_mode: string
 }
 
 export default function AdminDashboard() {
-  const [feedbackList, setFeedbackList] = useState<Feedback[]>([]);
-  const [filteredFeedbackList, setFilteredFeedbackList] = useState<Feedback[]>(
-    []
-  );
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [dateRange, setDateRange] = useState({ start: "", end: "" });
-  const [ratingRange, setRatingRange] = useState({ min: "", max: "" });
-  const [interviewType, setInterviewType] = useState("");
+  const [feedbackList, setFeedbackList] = useState<Feedback[]>([])
+  const [filteredFeedbackList, setFilteredFeedbackList] = useState<Feedback[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [dateRange, setDateRange] = useState({ start: "", end: "" })
+  const [ratingRange, setRatingRange] = useState({ min: "", max: "" })
+  const [interviewType, setInterviewType] = useState("")
 
   useEffect(() => {
-    fetchFeedback();
-  }, []);
+    fetchFeedback()
+  }, [])
 
   useEffect(() => {
-    applyFilters();
-  }, [feedbackList, dateRange, ratingRange, interviewType]);
+    applyFilters()
+  }, [feedbackList, dateRange, ratingRange, interviewType])
 
   const fetchFeedback = async () => {
     try {
-      const response = await fetch("http://localhost:5000/feedback");
+      const response = await fetch("http://localhost:5000/feedback")
       if (!response.ok) {
-        throw new Error("Failed to fetch feedback");
+        throw new Error("Failed to fetch feedback")
       }
-      const data = await response.json();
-      setFeedbackList(data);
-      setFilteredFeedbackList(data);
-      setLoading(false);
+      const data = await response.json()
+      setFeedbackList(data)
+      setFilteredFeedbackList(data)
+      setLoading(false)
     } catch (err) {
-      setError("An error occurred while fetching feedback");
-      setLoading(false);
+      setError("An error occurred while fetching feedback")
+      setLoading(false)
     }
-  };
+  }
 
   const applyFilters = () => {
-    let filtered = [...feedbackList];
+    let filtered = [...feedbackList]
 
     if (dateRange.start && dateRange.end) {
       filtered = filtered.filter(
         (feedback) =>
-          feedback.interview_date >= dateRange.start &&
-          feedback.interview_date <= dateRange.end
-      );
+          feedback.interview_date >= dateRange.start && feedback.interview_date <= dateRange.end
+      )
     }
 
     if (ratingRange.min && ratingRange.max) {
@@ -85,54 +69,36 @@ export default function AdminDashboard() {
         (feedback) =>
           feedback.rating_experience >= parseInt(ratingRange.min) &&
           feedback.rating_experience <= parseInt(ratingRange.max)
-      );
+      )
     }
 
-    if (interviewType && interviewType !== "all") {
-      filtered = filtered.filter(
-        (feedback) => feedback.interview_mode === interviewType
-      );
+    if (interviewType) {
+      filtered = filtered.filter((feedback) => feedback.interview_mode === interviewType)
     }
 
-    setFilteredFeedbackList(filtered);
-  };
+    setFilteredFeedbackList(filtered)
+  }
 
   const calculateStatistics = () => {
-    const totalFeedback = filteredFeedbackList.length;
+    const totalFeedback = filteredFeedbackList.length
     const averageRating =
-      filteredFeedbackList.reduce(
-        (sum, feedback) => sum + feedback.rating_experience,
-        0
-      ) / totalFeedback;
-    const modeMap = new Map();
+      filteredFeedbackList.reduce((sum, feedback) => sum + feedback.rating_experience, 0) / totalFeedback
+    const modeMap = new Map()
     filteredFeedbackList.forEach((feedback) => {
-      modeMap.set(feedback.role, (modeMap.get(feedback.role) || 0) + 1);
-    });
-    const mostCommonRole = Array.from(modeMap.entries()).reduce(
-      (a, b) => (a[1] > b[1] ? a : b),
-      [null, 0] // Initial value should be a tuple of two elements (key, value)
-    )[0];
+      modeMap.set(feedback.role, (modeMap.get(feedback.role) || 0) + 1)
+    })
+    const mostCommonRole = Array.from(modeMap.entries()).reduce((a, b) => (a[1] > b[1] ? a : b))[0]
 
     const interviewModeDistribution = {
-      "In-Person": filteredFeedbackList.filter(
-        (f) => f.interview_mode === "In-Person"
-      ).length,
-      Virtual: filteredFeedbackList.filter(
-        (f) => f.interview_mode === "Virtual"
-      ).length,
-      Phone: filteredFeedbackList.filter((f) => f.interview_mode === "Phone")
-        .length,
-    };
+      "In-Person": filteredFeedbackList.filter((f) => f.interview_mode === "In-Person").length,
+      Virtual: filteredFeedbackList.filter((f) => f.interview_mode === "Virtual").length,
+      Phone: filteredFeedbackList.filter((f) => f.interview_mode === "Phone").length,
+    }
 
-    return {
-      totalFeedback,
-      averageRating,
-      mostCommonRole,
-      interviewModeDistribution,
-    };
-  };
+    return { totalFeedback, averageRating, mostCommonRole, interviewModeDistribution }
+  }
 
-  const stats = calculateStatistics();
+  const stats = calculateStatistics()
 
   const pieChartData = {
     labels: ["In-Person", "Virtual", "Phone"],
@@ -147,10 +113,10 @@ export default function AdminDashboard() {
         hoverBackgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
       },
     ],
-  };
+  }
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  if (loading) return <div>Loading...</div>
+  if (error) return <div>{error}</div>
 
   return (
     <div className="container mx-auto py-10">
@@ -169,9 +135,7 @@ export default function AdminDashboard() {
             <CardTitle>Average Rating</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold">
-              {stats.averageRating.toFixed(1)} / 5
-            </p>
+            <p className="text-3xl font-bold">{stats.averageRating.toFixed(1)} / 5</p>
           </CardContent>
         </Card>
         <Card>
@@ -200,9 +164,7 @@ export default function AdminDashboard() {
               id="start-date"
               type="date"
               value={dateRange.start}
-              onChange={(e) =>
-                setDateRange({ ...dateRange, start: e.target.value })
-              }
+              onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
             />
           </div>
           <div>
@@ -211,9 +173,7 @@ export default function AdminDashboard() {
               id="end-date"
               type="date"
               value={dateRange.end}
-              onChange={(e) =>
-                setDateRange({ ...dateRange, end: e.target.value })
-              }
+              onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
             />
           </div>
           <div>
@@ -223,8 +183,7 @@ export default function AdminDashboard() {
                 <SelectValue placeholder="Select interview type" />
               </SelectTrigger>
               <SelectContent>
-                {/* Use a valid value instead of an empty string */}
-                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="">All</SelectItem>
                 <SelectItem value="In-Person">In-Person</SelectItem>
                 <SelectItem value="Virtual">Virtual</SelectItem>
                 <SelectItem value="Phone">Phone</SelectItem>
@@ -239,9 +198,7 @@ export default function AdminDashboard() {
               min="1"
               max="5"
               value={ratingRange.min}
-              onChange={(e) =>
-                setRatingRange({ ...ratingRange, min: e.target.value })
-              }
+              onChange={(e) => setRatingRange({ ...ratingRange, min: e.target.value })}
             />
           </div>
           <div>
@@ -252,9 +209,7 @@ export default function AdminDashboard() {
               min="1"
               max="5"
               value={ratingRange.max}
-              onChange={(e) =>
-                setRatingRange({ ...ratingRange, max: e.target.value })
-              }
+              onChange={(e) => setRatingRange({ ...ratingRange, max: e.target.value })}
             />
           </div>
         </div>
@@ -276,9 +231,7 @@ export default function AdminDashboard() {
               <TableRow key={feedback.id}>
                 <TableCell>{feedback.full_name || "Anonymous"}</TableCell>
                 <TableCell>{feedback.role}</TableCell>
-                <TableCell>
-                  {new Date(feedback.interview_date).toLocaleDateString()}
-                </TableCell>
+                <TableCell>{new Date(feedback.interview_date).toLocaleDateString()}</TableCell>
                 <TableCell>{feedback.rating_experience}</TableCell>
                 <TableCell>
                   <Button variant="outline" size="sm" className="mr-2">
@@ -294,5 +247,6 @@ export default function AdminDashboard() {
         </Table>
       </div>
     </div>
-  );
+  )
 }
+
