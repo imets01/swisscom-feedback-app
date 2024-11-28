@@ -6,6 +6,7 @@ from flask_restx import Api, Resource, fields
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for frontend-backend communication
+CORS(app, resources={r"/feedback": {"origins": "http://localhost:3000"}})
 api = Api(app)  # Initialize Flask-RESTX API
 
 
