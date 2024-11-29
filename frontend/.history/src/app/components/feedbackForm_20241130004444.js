@@ -137,11 +137,7 @@ export default function FeedbackForm() {
             control={form.control}
             name="contact_permission"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Can we contact you about your feedback?
-                  <span className="text-red-500"> *</span>
-                </FormLabel>
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                 <FormControl>
                   <RadioGroup
                     onValueChange={(value) => field.onChange(value === "true")}

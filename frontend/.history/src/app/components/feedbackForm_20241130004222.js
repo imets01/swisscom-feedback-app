@@ -137,11 +137,7 @@ export default function FeedbackForm() {
             control={form.control}
             name="contact_permission"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Can we contact you about your feedback?
-                  <span className="text-red-500"> *</span>
-                </FormLabel>
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                 <FormControl>
                   <RadioGroup
                     onValueChange={(value) => field.onChange(value === "true")}
@@ -434,11 +430,7 @@ export default function FeedbackForm() {
             control={form.control}
             name="description_clear"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Was the Job Description Clear?
-                  <span className="text-red-500"> *</span>
-                </FormLabel>
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                 <FormControl>
                   <RadioGroup
                     onValueChange={(value) => field.onChange(value === "true")}
@@ -450,7 +442,7 @@ export default function FeedbackForm() {
                         <RadioGroupItem value="true" />
                       </FormControl>
                       <FormLabel className="font-normal">
-                        Yes, I understood everything
+                        Yes, the job description was clear
                       </FormLabel>
                     </FormItem>
                     <FormItem className="flex items-center space-x-3 space-y-0">
@@ -458,7 +450,7 @@ export default function FeedbackForm() {
                         <RadioGroupItem value="false" />
                       </FormControl>
                       <FormLabel className="font-normal">
-                        No, I still have questions
+                        No, the job description was not clear
                       </FormLabel>
                     </FormItem>
                   </RadioGroup>

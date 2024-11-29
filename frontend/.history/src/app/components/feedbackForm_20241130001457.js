@@ -52,7 +52,7 @@ const formSchema = z.object({
   liked: z.string().or(z.literal("")),
   improved: z.string().or(z.literal("")),
   recommendation: z.enum(["Definitely", "Maybe", "No"]),
-  heard_about: z.enum(["Social media", "Job fair", "Advertisement"]),
+  heard_about: z.enum(["In-Person", "Virtual", "Phone"]),
 });
 
 export default function FeedbackForm() {
@@ -83,7 +83,7 @@ export default function FeedbackForm() {
   };
 
   return (
-    <div className="container mx-auto py-10 my-24 max-w-5xl px-14 shadow-xl rounded-3xl">
+    <div className="container mx-auto py-10 px-72">
       <h2 className="text-3xl font-bold mb-6">Submit Your Feedback</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -137,11 +137,7 @@ export default function FeedbackForm() {
             control={form.control}
             name="contact_permission"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Can we contact you about your feedback?
-                  <span className="text-red-500"> *</span>
-                </FormLabel>
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                 <FormControl>
                   <RadioGroup
                     onValueChange={(value) => field.onChange(value === "true")}
@@ -174,9 +170,7 @@ export default function FeedbackForm() {
             name="role"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Role Interviewed For<span className="text-red-500"> *</span>
-                </FormLabel>
+                <FormLabel>Role Interviewed For</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -208,9 +202,7 @@ export default function FeedbackForm() {
             name="interview_date"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>
-                  Date of Interview<span className="text-red-500"> *</span>
-                </FormLabel>
+                <FormLabel>Date of Interview</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -251,9 +243,7 @@ export default function FeedbackForm() {
             name="interview_type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Type of Interview<span className="text-red-500"> *</span>
-                </FormLabel>
+                <FormLabel>Type of Interview</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -285,9 +275,7 @@ export default function FeedbackForm() {
             name="interview_mode"
             render={({ field }) => (
               <FormItem className="space-y-3">
-                <FormLabel>
-                  Mode of Interview<span className="text-red-500"> *</span>
-                </FormLabel>
+                <FormLabel>Mode of Interview</FormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
@@ -323,9 +311,7 @@ export default function FeedbackForm() {
             name="rating_experience"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Overall Experience<span className="text-red-500"> *</span>
-                </FormLabel>
+                <FormLabel>Overall Experience</FormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={(value) => field.onChange(parseInt(value))}
@@ -365,10 +351,7 @@ export default function FeedbackForm() {
             name="rating_professionalism"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Interviewer Professionalism
-                  <span className="text-red-500"> *</span>
-                </FormLabel>
+                <FormLabel>Interviewer Professionalism</FormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={(value) => field.onChange(parseInt(value))}
@@ -408,9 +391,7 @@ export default function FeedbackForm() {
             name="difficulty"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>
-                  Interview Difficulty<span className="text-red-500"> *</span>
-                </FormLabel>
+                <FormLabel>Interview Difficulty</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
@@ -434,11 +415,7 @@ export default function FeedbackForm() {
             control={form.control}
             name="description_clear"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Was the Job Description Clear?
-                  <span className="text-red-500"> *</span>
-                </FormLabel>
+              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                 <FormControl>
                   <RadioGroup
                     onValueChange={(value) => field.onChange(value === "true")}
@@ -450,7 +427,7 @@ export default function FeedbackForm() {
                         <RadioGroupItem value="true" />
                       </FormControl>
                       <FormLabel className="font-normal">
-                        Yes, I understood everything
+                        Yes, the job description was clear
                       </FormLabel>
                     </FormItem>
                     <FormItem className="flex items-center space-x-3 space-y-0">
@@ -458,7 +435,7 @@ export default function FeedbackForm() {
                         <RadioGroupItem value="false" />
                       </FormControl>
                       <FormLabel className="font-normal">
-                        No, I still have questions
+                        No, the job description was not clear
                       </FormLabel>
                     </FormItem>
                   </RadioGroup>
