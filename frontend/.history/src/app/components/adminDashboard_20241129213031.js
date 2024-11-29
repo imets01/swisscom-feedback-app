@@ -5,13 +5,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import FeedbackTable from "./adminComponents/feedbackTable";
+import { set } from "date-fns";
 
 export default function AdminDashboard() {
   const [feedbackList, setFeedbackList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
-
   const router = useRouter();
 
   useEffect(() => {
@@ -88,7 +87,6 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
       </div>
-      <FeedbackTable feedbackList={feedbackList} />
     </div>
   );
 }

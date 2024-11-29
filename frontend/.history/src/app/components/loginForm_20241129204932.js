@@ -81,6 +81,9 @@ export default function LoginForm() {
       <Card className="w-[350px]">
         <CardHeader>
           <CardTitle>Login</CardTitle>
+          <CardDescription>
+            Enter your credentials to access your account.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -94,7 +97,9 @@ export default function LoginForm() {
                     <FormControl>
                       <Input placeholder="Enter your email" {...field} />
                     </FormControl>
-
+                    <FormDescription>
+                      We&apos;ll never share your email with anyone else.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

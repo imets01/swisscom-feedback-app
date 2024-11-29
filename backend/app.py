@@ -7,18 +7,17 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for frontend-backend communication
-CORS(app, origins="http://localhost:3000")  # Allow requests from localhost:3000
+CORS(app)
+CORS(app, origins="http://localhost:3000")
 
-api = Api(app)  # Initialize Flask-RESTX API
+api = Api(app)
 
 # JWT setup
-app.config['JWT_SECRET_KEY'] = 'your-secret-key'  # Change this in production!
+app.config['JWT_SECRET_KEY'] = 'mGgh1kMZRp+cdsOmI1mIJpC+20kHZIeLogoGCj5Z/YY='
 jwt = JWTManager(app)
 
 
 
-# Define the Feedback model using Flask-RESTX's fields
 feedback_model = api.model('Feedback', {
     'full_name': fields.String(description='Full Name (Optional)'),
     'email': fields.String(description='Email Address (Optional)'),
@@ -44,7 +43,6 @@ user_model = api.model('Signup', {
 
 })
 
-# Connect to the SQLite database
 def get_db():
     conn = sqlite3.connect('feedback.db')
     conn.row_factory = sqlite3.Row
@@ -89,14 +87,11 @@ def init_db():
 def home():
     return jsonify({"message": "Welcome to the Swisscom Feedback API"})
 
-# Resource to handle feedback submission
 class Feedback(Resource):
-    # POST method to submit feedback
     @api.expect(feedback_model)
     def post(self):
         data = request.json
 
-        # Extract fields from the request
         full_name = data.get('full_name')
         email = data.get('email')
         phone = data.get('phone')
@@ -114,7 +109,6 @@ class Feedback(Resource):
         recommendation = data['recommendation']
         heard_about = data.get('heard_about')
 
-        # Save feedback in the database
         conn = get_db()
         conn.execute('''
             INSERT INTO feedback 
@@ -129,18 +123,14 @@ class Feedback(Resource):
 
         return {"message": "Feedback submitted successfully!"}, 201
 
-    # GET method to retrieve all feedback
     def get(self):
         conn = get_db()
         feedback = conn.execute('SELECT * FROM feedback').fetchall()
 
-        # Convert feedback rows to dictionaries (so it's serializable)
         feedback_list = [dict(row) for row in feedback]
 
-        # Return feedback as JSON
         return feedback_list, 200
 
-# Resource to handle retrieving feedback by ID
 class FeedbackByID(Resource):
     def get(self, id):
         conn = get_db()
@@ -149,12 +139,58 @@ class FeedbackByID(Resource):
         if feedback is None:
             return jsonify({"error": "Feedback not found"}), 404
 
-        # Convert the row to a dictionary for easy JSON response
         feedback_data = dict(feedback)
 
         return feedback_data, 200
 
-# Resource for user signup (register new user)
+
+# Resource for feedback statistics
+class FeedbackStats(Resource):
+    def get(self):
+        conn = get_db()
+
+        total_feedback_query = 'SELECT COUNT(*) as total_feedback FROM feedback'
+        total_feedback_result = conn.execute(total_feedback_query).fetchone()
+        total_feedback = total_feedback_result['total_feedback']
+
+        # Calculate average rating for experience
+        avg_rating_query = 'SELECT AVG(rating_experience) as avg_rating FROM feedback'
+        avg_rating_result = conn.execute(avg_rating_query).fetchone()
+        avg_rating = round(avg_rating_result['avg_rating'], 2)
+
+        # Calculate the most common role
+        role_query = 'SELECT role, COUNT(*) as role_count FROM feedback GROUP BY role ORDER BY role_count DESC LIMIT 1'
+        role_result = conn.execute(role_query).fetchone()
+        most_common_role = role_result['role'] if role_result else None
+
+        # Calculate the interview mode distribution
+        mode_query = '''
+            SELECT interview_mode, COUNT(*) as mode_count
+            FROM feedback
+            GROUP BY interview_mode
+        '''
+        mode_results = conn.execute(mode_query).fetchall()
+
+        interview_mode_distribution = {
+            "In-Person": 0,
+            "Virtual": 0,
+            "Phone": 0,
+        }
+
+        for mode in mode_results:
+            interview_mode = mode['interview_mode']
+            if interview_mode in interview_mode_distribution:
+                interview_mode_distribution[interview_mode] = mode['mode_count']
+
+        return jsonify({
+            'total_feedbacks': total_feedback,
+            'average_rating': avg_rating,
+            'most_common_role': most_common_role,
+            'interview_mode_distribution': interview_mode_distribution
+        })
+
+
+
 class Signup(Resource):
     @api.expect(user_model)
     def post(self):
@@ -163,7 +199,6 @@ class Signup(Resource):
         password = data.get('password')
 
 
-        # Check if username already exists
         conn = get_db()
         existing_user = conn.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
 
@@ -173,7 +208,6 @@ class Signup(Resource):
         # # Hash the password before saving
         # hashed_password = generate_password_hash(password, method='sha256')
 
-        # Insert new user into the database
         conn.execute('''
             INSERT INTO users (email, password)
             VALUES (?, ?)
@@ -181,22 +215,18 @@ class Signup(Resource):
         conn.commit()
         return {"message": "User created successfully!"}, 201
 
-# Resource for login (JWT token generation)
 class Login(Resource):
     @api.expect(user_model)
     def post(self):
         data = request.json
         email = data.get('email')
         password = data.get('password')
-
-        # Check if user exists and password matches
         conn = get_db()
         user = conn.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
 
-        if user and user['password'] == password:  # In a real app, password should be hashed
-            # Create a JWT token
+        if user and user['password'] == password:
             access_token = create_access_token(identity=email)
-            # Return the user object along with the token
+
             return {
                 "user": {
                     "id": user["id"],
@@ -207,21 +237,21 @@ class Login(Resource):
         else:
             return {"error": "Invalid username or password"}, 401
 
-# Protected route (requires JWT)
 class Admin(Resource):
     @jwt_required()
     def get(self):
-        current_user = get_jwt_identity()  # Get the current logged-in user
+        current_user = get_jwt_identity()
         return {"message": f"Welcome to the admin page, {current_user}!"}, 200
 
 # Add resources to the API
-api.add_resource(Feedback, '/feedback')  # All feedback actions (POST, GET)
-api.add_resource(FeedbackByID, '/feedback/<int:id>')  # Feedback by ID (GET)
+api.add_resource(Feedback, '/feedback')
+api.add_resource(FeedbackByID, '/feedback/<int:id>')
 api.add_resource(Signup, '/signup')
-api.add_resource(Login, '/login')  # Login for JWT token
-api.add_resource(Admin, '/admin')  # Admin page (protected by JWT)
+api.add_resource(Login, '/login')
+api.add_resource(Admin, '/admin')
+api.add_resource(FeedbackStats, '/stats')
 
 if __name__ == '__main__':
-    init_db()  # Initialize the database table
-    app.run(debug=True)  # Run the Flask app
+    init_db()
+    app.run(debug=True)
 

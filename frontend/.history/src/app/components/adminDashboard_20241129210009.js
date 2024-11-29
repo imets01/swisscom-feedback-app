@@ -5,13 +5,20 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import FeedbackTable from "./adminComponents/feedbackTable";
 
 export default function AdminDashboard() {
   const [feedbackList, setFeedbackList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState(null);
-
+  const [stats, setStats] = useState({
+    totalFeedback: 0,
+    averageRating: 0,
+    mostCommonRole: "",
+    interviewModeDistribution: {
+      "In-Person": 0,
+      Virtual: 0,
+      Phone: 0,
+    },
+  });
   const router = useRouter();
 
   useEffect(() => {
@@ -31,9 +38,11 @@ export default function AdminDashboard() {
         throw new Error("Failed to fetch feedback");
       }
       const data = await response.json();
-      setFeedbackList(data); // Update feedbackList
+      setFeedbackList(data);
+      setLoading(false);
     } catch (err) {
-      console.error("Error fetching feedback:", err);
+      setError("An error occurred while fetching feedback");
+      setLoading(false);
     }
   };
 
@@ -44,19 +53,14 @@ export default function AdminDashboard() {
         throw new Error("Failed to fetch stats");
       }
       const data = await response.json();
-
-      setStats(data);
       console.log(data);
+      setStats(data);
+      setLoading(false);
     } catch (err) {
-      console.error("Error fetching stats:", err);
-    } finally {
+      setError("An error occurred while fetching stats");
       setLoading(false);
     }
   };
-
-  if (loading || stats === null) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="container mx-auto py-10">
@@ -68,7 +72,7 @@ export default function AdminDashboard() {
             <CardTitle>Total Feedbacks</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold">{stats.total_feedbacks}</p>
+            <p className="text-3xl font-bold">{stats.totalFeedback}</p>
           </CardContent>
         </Card>
         <Card>
@@ -76,7 +80,7 @@ export default function AdminDashboard() {
             <CardTitle>Average Rating</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold">{stats.average_rating} / 5</p>
+            <p className="text-3xl font-bold">{stats.averageRating} / 5</p>
           </CardContent>
         </Card>
         <Card>
@@ -84,11 +88,10 @@ export default function AdminDashboard() {
             <CardTitle>Most Common Role</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-xl font-semibold">{stats.most_common_role}</p>
+            <p className="text-xl font-semibold">{stats.mostCommonRole}</p>
           </CardContent>
         </Card>
       </div>
-      <FeedbackTable feedbackList={feedbackList} />
     </div>
   );
 }

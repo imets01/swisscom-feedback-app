@@ -5,13 +5,12 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import FeedbackTable from "./adminComponents/feedbackTable";
+import { set } from "date-fns";
 
 export default function AdminDashboard() {
   const [feedbackList, setFeedbackList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
-
   const router = useRouter();
 
   useEffect(() => {
@@ -44,9 +43,7 @@ export default function AdminDashboard() {
         throw new Error("Failed to fetch stats");
       }
       const data = await response.json();
-
       setStats(data);
-      console.log(data);
     } catch (err) {
       console.error("Error fetching stats:", err);
     } finally {
@@ -54,10 +51,13 @@ export default function AdminDashboard() {
     }
   };
 
-  if (loading || stats === null) {
+  if (loading || !stats) {
     return <div>Loading...</div>;
   }
 
+  if (stats == null) {
+    return <div>NULLA...</div>;
+  }
   return (
     <div className="container mx-auto py-10">
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
@@ -68,7 +68,7 @@ export default function AdminDashboard() {
             <CardTitle>Total Feedbacks</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold">{stats.total_feedbacks}</p>
+            <p className="text-3xl font-bold">{stats.totalFeedback}</p>
           </CardContent>
         </Card>
         <Card>
@@ -76,7 +76,7 @@ export default function AdminDashboard() {
             <CardTitle>Average Rating</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold">{stats.average_rating} / 5</p>
+            <p className="text-3xl font-bold">{stats.averageRating} / 5</p>
           </CardContent>
         </Card>
         <Card>
@@ -84,11 +84,10 @@ export default function AdminDashboard() {
             <CardTitle>Most Common Role</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-xl font-semibold">{stats.most_common_role}</p>
+            <p className="text-xl font-semibold">{stats.mostCommonRole}</p>
           </CardContent>
         </Card>
       </div>
-      <FeedbackTable feedbackList={feedbackList} />
     </div>
   );
 }

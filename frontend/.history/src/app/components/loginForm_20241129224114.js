@@ -94,7 +94,9 @@ export default function LoginForm() {
                     <FormControl>
                       <Input placeholder="Enter your email" {...field} />
                     </FormControl>
-
+                    <FormDescription>
+                      We&apos;ll never share your email with anyone else.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

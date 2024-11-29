@@ -5,13 +5,20 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import FeedbackTable from "./adminComponents/feedbackTable";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { set } from "date-fns";
 
 export default function AdminDashboard() {
   const [feedbackList, setFeedbackList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
-
   const router = useRouter();
 
   useEffect(() => {
@@ -88,7 +95,40 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
       </div>
-      <FeedbackTable feedbackList={feedbackList} />
+      <div>
+        <h2 className="text-2xl font-bold mb-4">Feedback List</h2>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Role Interviewed For</TableHead>
+              <TableHead>Date of Interview</TableHead>
+              <TableHead>Overall Experience Rating</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {feedbackList.map((feedback) => (
+              <TableRow key={feedback.id}>
+                <TableCell>{feedback.full_name || "Anonymous"}</TableCell>
+                <TableCell>{feedback.role}</TableCell>
+                <TableCell>
+                  {new Date(feedback.interview_date).toLocaleDateString()}
+                </TableCell>
+                <TableCell>{feedback.rating_experience}</TableCell>
+                <TableCell>
+                  <Button variant="outline" size="sm" className="mr-2">
+                    View Details
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    Mark as Reviewed
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
