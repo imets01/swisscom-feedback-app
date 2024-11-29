@@ -124,12 +124,27 @@ class Feedback(Resource):
         return {"message": "Feedback submitted successfully!"}, 201
 
     def get(self):
+
+        page = request.args.get('page', default=1, type=int)  # Default page = 1
+        limit = request.args.get('limit', default=10, type=int)  # Default limit = 10
+
+        offset = (page - 1) * limit
+
         conn = get_db()
-        feedback = conn.execute('SELECT * FROM feedback').fetchall()
+
+        feedback_query = 'SELECT * FROM feedback LIMIT ? OFFSET ?'
+        feedback = conn.execute(feedback_query, (limit, offset)).fetchall()
+
+        total_feedback_query = 'SELECT COUNT(*) as total_feedback FROM feedback'
+        total_feedback_result = conn.execute(total_feedback_query).fetchone()
+        total_feedback = total_feedback_result['total_feedback']
 
         feedback_list = [dict(row) for row in feedback]
 
-        return feedback_list, 200
+        return {
+            'feedback': feedback_list,
+            'total': total_feedback
+        }, 200
 
 class FeedbackByID(Resource):
     def get(self, id):
