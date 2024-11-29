@@ -53,7 +53,7 @@ const FeedbackForm = () => {
   return (
     <div>
       <h2>Submit Your Feedback</h2>
-
+      <Button>Click me</Button>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="full_name">Full Name:</label>
@@ -236,7 +236,6 @@ const FeedbackForm = () => {
           />
         </div>
         <button type="submit">Submit Feedback</button>
-        <Button type="submit">Click me</Button>
       </form>
     </div>
   );

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import axios from "axios";
-import { Button } from "@/components/ui/button";
 
 const FeedbackForm = () => {
   // Set up state for the form inputs
@@ -53,7 +52,6 @@ const FeedbackForm = () => {
   return (
     <div>
       <h2>Submit Your Feedback</h2>
-
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="full_name">Full Name:</label>
@@ -236,7 +234,6 @@ const FeedbackForm = () => {
           />
         </div>
         <button type="submit">Submit Feedback</button>
-        <Button type="submit">Click me</Button>
       </form>
     </div>
   );
