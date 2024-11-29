@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio";
 import {
   Select,
   SelectContent,
@@ -20,10 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+import { Calendar, CalendarIcon } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
@@ -56,16 +53,10 @@ const formSchema = z.object({
 });
 
 export default function FeedbackForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState("idle");
-
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       full_name: "",
-      email: "",
-      phone: "",
-      heard_about: "",
     },
   });
 
@@ -545,22 +536,6 @@ export default function FeedbackForm() {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="heard_about"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>How did you hear about this opportunity?</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Submitting..." : "Submit Feedback"}
-          </Button>
         </form>
       </Form>
       {/* 

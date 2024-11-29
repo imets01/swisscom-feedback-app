@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import {
   Popover,
@@ -65,7 +64,6 @@ export default function FeedbackForm() {
       full_name: "",
       email: "",
       phone: "",
-      heard_about: "",
     },
   });
 

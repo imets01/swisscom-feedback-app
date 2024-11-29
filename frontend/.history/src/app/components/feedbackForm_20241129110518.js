@@ -65,7 +65,6 @@ export default function FeedbackForm() {
       full_name: "",
       email: "",
       phone: "",
-      heard_about: "",
     },
   });
 

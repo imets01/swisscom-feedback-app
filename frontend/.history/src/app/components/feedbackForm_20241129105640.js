@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio";
 import {
   Select,
   SelectContent,
@@ -20,10 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+import { Calendar, CalendarIcon } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
@@ -56,16 +53,10 @@ const formSchema = z.object({
 });
 
 export default function FeedbackForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState("idle");
-
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       full_name: "",
-      email: "",
-      phone: "",
-      heard_about: "",
     },
   });
 
@@ -490,77 +481,6 @@ export default function FeedbackForm() {
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="improved"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>What could be improved?</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Tell us what could be improved..."
-                    className="resize-none"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="recommendation"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>Would you recommend Swisscom?</FormLabel>
-                <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    className="flex flex-col space-y-1"
-                  >
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="Definitely" />
-                      </FormControl>
-                      <FormLabel className="font-normal">Definitely</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="Maybe" />
-                      </FormControl>
-                      <FormLabel className="font-normal">Maybe</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="No" />
-                      </FormControl>
-                      <FormLabel className="font-normal">No</FormLabel>
-                    </FormItem>
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="heard_about"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>How did you hear about this opportunity?</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Submitting..." : "Submit Feedback"}
-          </Button>
         </form>
       </Form>
       {/* 

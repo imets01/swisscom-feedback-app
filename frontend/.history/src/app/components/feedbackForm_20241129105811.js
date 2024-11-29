@@ -12,7 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio";
 import {
   Select,
   SelectContent,
@@ -20,10 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+import { Calendar, CalendarIcon } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
@@ -63,9 +60,6 @@ export default function FeedbackForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       full_name: "",
-      email: "",
-      phone: "",
-      heard_about: "",
     },
   });
 
