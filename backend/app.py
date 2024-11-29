@@ -2,12 +2,20 @@ from flask import Flask, request, jsonify
 import sqlite3
 from flask_cors import CORS
 from flask_restx import Api, Resource, fields
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+
 
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for frontend-backend communication
-CORS(app, resources={r"/feedback": {"origins": "http://localhost:3000"}})
+CORS(app, origins="http://localhost:3000")  # Allow requests from localhost:3000
+
 api = Api(app)  # Initialize Flask-RESTX API
+
+# JWT setup
+app.config['JWT_SECRET_KEY'] = 'your-secret-key'  # Change this in production!
+jwt = JWTManager(app)
+
 
 
 # Define the Feedback model using Flask-RESTX's fields
@@ -28,6 +36,12 @@ feedback_model = api.model('Feedback', {
     'improved': fields.String(description='What could be improved?'),
     'recommendation': fields.String(required=True, description='Would you recommend Swisscom?'),
     'heard_about': fields.String(description='How did you hear about this opportunity?')
+})
+
+user_model = api.model('Signup', {
+    'email': fields.String(description='Email Address'),
+    'password': fields.String(description='Password'),
+
 })
 
 # Connect to the SQLite database
@@ -58,6 +72,15 @@ def init_db():
             improved TEXT,
             recommendation TEXT NOT NULL,
             heard_about TEXT
+        )
+    ''')
+
+    # Create a user table for login (username, password)
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY,
+            email TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL
         )
     ''')
     conn.commit()
@@ -131,10 +154,74 @@ class FeedbackByID(Resource):
 
         return feedback_data, 200
 
+# Resource for user signup (register new user)
+class Signup(Resource):
+    @api.expect(user_model)
+    def post(self):
+        data = request.json
+        email = data.get('email')
+        password = data.get('password')
+
+
+        # Check if username already exists
+        conn = get_db()
+        existing_user = conn.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
+
+        if existing_user:
+            return {"error": "Username already taken"}, 400
+
+        # # Hash the password before saving
+        # hashed_password = generate_password_hash(password, method='sha256')
+
+        # Insert new user into the database
+        conn.execute('''
+            INSERT INTO users (email, password)
+            VALUES (?, ?)
+        ''', (email, password))
+        conn.commit()
+        return {"message": "User created successfully!"}, 201
+
+# Resource for login (JWT token generation)
+class Login(Resource):
+    @api.expect(user_model)
+    def post(self):
+        data = request.json
+        email = data.get('email')
+        password = data.get('password')
+
+        # Check if user exists and password matches
+        conn = get_db()
+        user = conn.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
+
+        if user and user['password'] == password:  # In a real app, password should be hashed
+            # Create a JWT token
+            access_token = create_access_token(identity=email)
+            # Return the user object along with the token
+            return {
+                "user": {
+                    "id": user["id"],
+                    "email": user["email"],
+                },
+                "token": access_token
+            }, 200
+        else:
+            return {"error": "Invalid username or password"}, 401
+
+# Protected route (requires JWT)
+class Admin(Resource):
+    @jwt_required()
+    def get(self):
+        current_user = get_jwt_identity()  # Get the current logged-in user
+        return {"message": f"Welcome to the admin page, {current_user}!"}, 200
+
 # Add resources to the API
 api.add_resource(Feedback, '/feedback')  # All feedback actions (POST, GET)
 api.add_resource(FeedbackByID, '/feedback/<int:id>')  # Feedback by ID (GET)
+api.add_resource(Signup, '/signup')
+api.add_resource(Login, '/login')  # Login for JWT token
+api.add_resource(Admin, '/admin')  # Admin page (protected by JWT)
 
 if __name__ == '__main__':
     init_db()  # Initialize the database table
     app.run(debug=True)  # Run the Flask app
+
