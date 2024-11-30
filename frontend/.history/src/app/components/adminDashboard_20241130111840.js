@@ -14,7 +14,16 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { AdminSidebar } from "./adminComponents/adminSidebar";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarProvider,
+} from "@/components/ui/sidebar";
+
+import Link from "next/link";
 
 export default function AdminDashboard() {
   const [feedbackList, setFeedbackList] = useState([]);
@@ -81,9 +90,9 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="container mx-12 py-8">
+    <div className="container mx-auto py-10">
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
-      {/* <Button onClick={handleSignOut}>Log Out</Button> */}
+      <Button onClick={handleSignOut}>Log Out</Button>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <Card>
           <CardHeader>

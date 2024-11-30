@@ -14,7 +14,22 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { AdminSidebar } from "./adminComponents/adminSidebar";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+} from "@/components/ui/sidebar";
+import { SidebarNav, SidebarNavItem } from "@/components/ui/sidebarNav";
+import { ScrollArea } from "@/components/ui/scrollArea";
+import {
+  LayoutDashboard,
+  FileText,
+  Settings,
+  LogOut,
+} from "@/components/icons";
+import Link from "next/link";
 
 export default function AdminDashboard() {
   const [feedbackList, setFeedbackList] = useState([]);
@@ -81,9 +96,49 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="container mx-12 py-8">
+    <div className="container mx-auto py-10">
+      <Sidebar>
+        <SidebarHeader className="flex items-center px-4 py-2">
+          <Link href="/admin" className="flex items-center">
+            <LayoutDashboard className="h-6 w-6 mr-2" />
+            <span className="text-lg font-semibold">Admin Panel</span>
+          </Link>
+        </SidebarHeader>
+        <SidebarContent>
+          <ScrollArea className="h-[calc(100vh-8rem)]">
+            <SidebarNav>
+              <SidebarNavItem href="/admin" active={pathname === "/admin"}>
+                <LayoutDashboard className="h-4 w-4 mr-2" />
+                Dashboard
+              </SidebarNavItem>
+              <SidebarNavItem
+                href="/admin/feedbacks"
+                active={pathname === "/admin/feedbacks"}
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                Feedbacks
+              </SidebarNavItem>
+              <SidebarNavItem
+                href="/admin/settings"
+                active={pathname === "/admin/settings"}
+              >
+                <Settings className="h-4 w-4 mr-2" />
+                Settings
+              </SidebarNavItem>
+            </SidebarNav>
+          </ScrollArea>
+        </SidebarContent>
+        <SidebarFooter>
+          <Button variant="ghost" className="w-full justify-start" asChild>
+            <Link href="/api/auth/signout">
+              <LogOut className="h-4 w-4 mr-2" />
+              Log out
+            </Link>
+          </Button>
+        </SidebarFooter>
+      </Sidebar>
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
-      {/* <Button onClick={handleSignOut}>Log Out</Button> */}
+      <Button onClick={handleSignOut}>Log Out</Button>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <Card>
           <CardHeader>
