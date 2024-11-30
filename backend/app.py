@@ -4,6 +4,7 @@ from flask_cors import CORS
 from flask_restx import Api, Resource, fields
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
+from feedback_stats import get_feedback_stats
 
 
 
@@ -161,51 +162,10 @@ class FeedbackByID(Resource):
         return feedback_data, 200
 
 
-# Resource for feedback statistics
 class FeedbackStats(Resource):
     def get(self):
-        conn = get_db()
-
-        total_feedback_query = 'SELECT COUNT(*) as total_feedback FROM feedback'
-        total_feedback_result = conn.execute(total_feedback_query).fetchone()
-        total_feedback = total_feedback_result['total_feedback']
-
-        # Calculate average rating for experience
-        avg_rating_query = 'SELECT AVG(rating_experience) as avg_rating FROM feedback'
-        avg_rating_result = conn.execute(avg_rating_query).fetchone()
-        avg_rating = round(avg_rating_result['avg_rating'], 2)
-
-        # Calculate the most common role
-        role_query = 'SELECT role, COUNT(*) as role_count FROM feedback GROUP BY role ORDER BY role_count DESC LIMIT 1'
-        role_result = conn.execute(role_query).fetchone()
-        most_common_role = role_result['role'] if role_result else None
-
-        # Calculate the interview mode distribution
-        mode_query = '''
-            SELECT interview_mode, COUNT(*) as mode_count
-            FROM feedback
-            GROUP BY interview_mode
-        '''
-        mode_results = conn.execute(mode_query).fetchall()
-
-        interview_mode_distribution = {
-            "In-Person": 0,
-            "Virtual": 0,
-            "Phone": 0,
-        }
-
-        for mode in mode_results:
-            interview_mode = mode['interview_mode']
-            if interview_mode in interview_mode_distribution:
-                interview_mode_distribution[interview_mode] = mode['mode_count']
-
-        return jsonify({
-            'total_feedbacks': total_feedback,
-            'average_rating': avg_rating,
-            'most_common_role': most_common_role,
-            'interview_mode_distribution': interview_mode_distribution
-        })
-
+        stats = get_feedback_stats()
+        return jsonify(stats)
 
 
 class Signup(Resource):
@@ -241,7 +201,7 @@ class Login(Resource):
         conn = get_db()
         user = conn.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
         is_valid = check_password_hash(user['password'], password)
-        
+
         if user and is_valid:
             access_token = create_access_token(identity=email)
 
