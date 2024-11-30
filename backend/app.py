@@ -3,6 +3,8 @@ import sqlite3
 from flask_cors import CORS
 from flask_restx import Api, Resource, fields
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 
 
@@ -221,12 +223,12 @@ class Signup(Resource):
             return {"error": "Username already taken"}, 400
 
         # # Hash the password before saving
-        # hashed_password = generate_password_hash(password, method='sha256')
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
 
         conn.execute('''
             INSERT INTO users (email, password)
             VALUES (?, ?)
-        ''', (email, password))
+        ''', (email, hashed_password ))
         conn.commit()
         return {"message": "User created successfully!"}, 201
 
@@ -238,8 +240,9 @@ class Login(Resource):
         password = data.get('password')
         conn = get_db()
         user = conn.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
-
-        if user and user['password'] == password:
+        is_valid = check_password_hash(user['password'], password)
+        
+        if user and is_valid:
             access_token = create_access_token(identity=email)
 
             return {
