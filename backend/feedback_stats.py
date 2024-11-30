@@ -57,43 +57,14 @@ def get_interview_type_distribution(conn):
     return distribution
 
 
-def get_difficulty_distribution(conn):
+def get_difficulty_rating(conn):
     query = '''
-        SELECT difficulty, COUNT(*) as difficulty_count
+        SELECT difficulty, rating_experience
         FROM feedback
-        GROUP BY difficulty
     '''
     results = conn.execute(query).fetchall()
-    distribution = {
-        "Very Easy": 0,
-        "Easy": 0,
-        "Neutral": 0,
-        "Challenging": 0,
-        "Very Difficult": 0,
-    }
-    for diff in results:
-        distribution[diff['difficulty']] = diff['difficulty_count']
-    return distribution
-
-
-def get_experience_rating_distribution(conn):
-    query = '''
-        SELECT rating_experience, COUNT(*) as experience_count
-        FROM feedback
-        GROUP BY rating_experience
-    '''
-    results = conn.execute(query).fetchall()
-    distribution = {
-        1: 0,
-        2: 0,
-        3: 0,
-        4: 0,
-        5: 0,
-    }
-    for exp in results:
-        distribution[exp['rating_experience']] = exp['experience_count']
-    return distribution
-
+    # Convert each sqlite3.Row to a dictionary
+    return [dict(row) for row in results]
 
 def get_heard_about_distribution(conn):
     query = '''
@@ -116,8 +87,7 @@ def get_feedback_stats():
     most_common_role = get_most_common_role(conn)
     interview_mode_distribution = get_interview_mode_distribution(conn)
     interview_type_distribution = get_interview_type_distribution(conn)
-    difficulty_distribution = get_difficulty_distribution(conn)
-    experience_rating_distribution = get_experience_rating_distribution(conn)
+    difficulty_rating = get_difficulty_rating(conn)
     heard_about_distribution = get_heard_about_distribution(conn)
 
     return {
@@ -126,7 +96,6 @@ def get_feedback_stats():
         'most_common_role': most_common_role,
         'interview_mode_distribution': interview_mode_distribution,
         'interview_type_distribution': interview_type_distribution,
-        'difficulty_distribution': difficulty_distribution,
-        'experience_rating_distribution': experience_rating_distribution,
+        'difficulty_rating': difficulty_rating,
         'heard_about_distribution': heard_about_distribution
     }

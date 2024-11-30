@@ -32,7 +32,7 @@ feedback_model = api.model('Feedback', {
     'interview_mode': fields.String(required=True, description='Mode of Interview'),
     'rating_experience': fields.Integer(required=True, description='Overall Experience Rating (1-5)'),
     'rating_professionalism': fields.Integer(required=True, description='Interviewer Professionalism Rating (1-5)'),
-    'difficulty': fields.String(required=True, description='Interview Difficulty'),
+    'difficulty': fields.Integer(required=True, description='Interview Difficulty (1-5)'),
     'description_clear': fields.Boolean(description='Was the role description clear?'),
     'liked': fields.String(description='What did you like about the interview process?'),
     'improved': fields.String(description='What could be improved?'),
