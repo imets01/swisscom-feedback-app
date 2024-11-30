@@ -32,7 +32,7 @@ export default function Home() {
 
       <footer className="p-4 text-center">
         <Drawer>
-          <DrawerTrigger className=" h-9 w-fit rounded-md px-3   text-sm font-medium  text-muted-foreground hover:text-foreground hover:bg-accent">
+          <DrawerTrigger className=" h-9 w-fit rounded-md text-sm font-medium  text-muted-foreground hover:text-foreground hover:bg-accent">
             Admin Access
           </DrawerTrigger>
           <DrawerContent>

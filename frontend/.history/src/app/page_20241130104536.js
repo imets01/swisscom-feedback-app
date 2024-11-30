@@ -32,7 +32,7 @@ export default function Home() {
 
       <footer className="p-4 text-center">
         <Drawer>
-          <DrawerTrigger className=" h-9 w-fit rounded-md px-3   text-sm font-medium  text-muted-foreground hover:text-foreground hover:bg-accent">
+          <DrawerTrigger className=" h-9 w-fit rounded-md px-3 inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 text-muted-foreground hover:text-foreground hover:bg-accent">
             Admin Access
           </DrawerTrigger>
           <DrawerContent>
@@ -41,11 +41,11 @@ export default function Home() {
               <DrawerDescription></DrawerDescription>
               <LoginPage />
             </DrawerHeader>
-            <DrawerFooter className="flex justify-center items-center">
+            <DrawerFooter>
               <DrawerClose asChild>
                 <Button
                   variant="outline"
-                  className="h-9 w-fittransition-colors text-muted-foreground hover:text-foreground hover:bg-accent"
+                  className="w-1/6 flex items-center justify-center"
                 >
                   Cancel
                 </Button>

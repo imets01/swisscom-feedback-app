@@ -80,7 +80,7 @@ export default function LoginForm() {
     <div className="flex items-center justify-center pb-36 pt-12">
       <Card className="w-1/4 border-none shadow-none">
         <CardHeader>
-          <CardTitle>Admin Login</CardTitle>
+          <CardTitle>Login</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
