@@ -2,9 +2,8 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import FeedbackTable from "./adminComponents/feedbackTable";
 
-export default function AdminDashboard() {
+export default function ChartDashboard() {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
 

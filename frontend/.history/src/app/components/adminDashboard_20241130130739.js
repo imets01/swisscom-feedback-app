@@ -63,6 +63,7 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
       </div>
+      <FeedbackTable />
     </div>
   );
 }

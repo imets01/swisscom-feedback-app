@@ -1,12 +1,11 @@
 ﻿"use client";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { signOut } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import FeedbackTable from "./adminComponents/feedbackTable";
 import {
   Pagination,
   PaginationContent,
@@ -15,21 +14,31 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { AdminSidebar } from "./adminComponents/adminSidebar";
+import ChartDashboard from "./adminComponents/chartDashboard";
 
-import { Button } from "@/components/ui/button";
-import DetailDialog from "./detailDialog";
-
-import { useState } from "react";
-import { useEffect } from "react";
-export default function FeedbackTable() {
+export default function AdminDashboard() {
   const [feedbackList, setFeedbackList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState(null);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 7;
 
+  const router = useRouter();
   useEffect(() => {
     fetchFeedback(currentPage);
   }, [currentPage]);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    router.push("/");
+  };
 
   const fetchFeedback = async (page) => {
     try {
@@ -47,42 +56,35 @@ export default function FeedbackTable() {
     }
   };
 
+  const fetchStats = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/stats");
+      if (!response.ok) {
+        throw new Error("Failed to fetch stats");
+      }
+      const data = await response.json();
+
+      setStats(data);
+      console.log(data);
+    } catch (err) {
+      console.error("Error fetching stats:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
+
+  if (loading || stats === null) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="container mx-12 py-8">
-      <h2 className="text-2xl font-bold mb-4 ">Feedback List</h2>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Role Interviewed For</TableHead>
-            <TableHead>Date of Interview</TableHead>
-            <TableHead>Overall Experience Rating</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {feedbackList.map((feedback) => (
-            <TableRow key={feedback.id}>
-              <TableCell>{feedback.full_name || "Anonymous"}</TableCell>
-              <TableCell>{feedback.role}</TableCell>
-              <TableCell>
-                {new Date(feedback.interview_date).toLocaleDateString()}
-              </TableCell>
-              <TableCell>{feedback.rating_experience}</TableCell>
-              <TableCell>
-                <DetailDialog feedback={feedback} />
-
-                <Button variant="outline" size="sm">
-                  Mark as Reviewed
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <ChartDashboard />
+      <FeedbackTable feedbackList={feedbackList} />
       <div className="mt-4">
         <Pagination>
           <PaginationContent>

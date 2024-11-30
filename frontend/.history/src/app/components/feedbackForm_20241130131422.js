@@ -318,7 +318,6 @@ export default function FeedbackForm() {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="rating_experience"
@@ -354,7 +353,51 @@ export default function FeedbackForm() {
                     ))}
                   </RadioGroup>
                 </FormControl>
-                <FormDescription>1: Very Poor - 5: Excellent</FormDescription>
+                <FormDescription>
+                  Rate your overall experience (1: Very Poor - 5: Excellent)
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="rating_experience"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Overall Experience<span className="text-red-500"> *</span>
+                </FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={(value) => field.onChange(parseInt(value))}
+                    defaultValue={field.value?.toString()}
+                    className="flex space-x-1"
+                  >
+                    {[1, 2, 3, 4, 5].map((rating) => (
+                      <FormItem key={rating}>
+                        <FormControl>
+                          <RadioGroupItem
+                            value={rating.toString()}
+                            className="sr-only"
+                          />
+                        </FormControl>
+                        <FormLabel
+                          className={cn(
+                            "cursor-pointer rounded-md p-2 hover:bg-accent",
+                            field.value === rating &&
+                              "bg-primary text-primary-foreground hover:bg-primary"
+                          )}
+                        >
+                          {rating}
+                        </FormLabel>
+                      </FormItem>
+                    ))}
+                  </RadioGroup>
+                </FormControl>
+                <FormDescription>
+                  Rate your overall experience (1-5)
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -396,7 +439,7 @@ export default function FeedbackForm() {
                   </RadioGroup>
                 </FormControl>
                 <FormDescription>
-                  1: Very Unprofessional - 5: Very Professional
+                  Rate the interviewer&apos;s professionalism (1-5)
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -438,7 +481,7 @@ export default function FeedbackForm() {
                   </RadioGroup>
                 </FormControl>
                 <FormDescription>
-                  1: Very Easy - 5: Very Difficult
+                  Rate the interview difficulty (1-5)
                 </FormDescription>
                 <FormMessage />
               </FormItem>

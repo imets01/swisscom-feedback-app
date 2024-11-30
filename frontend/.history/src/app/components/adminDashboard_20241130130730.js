@@ -1,8 +1,13 @@
 ﻿"use client";
+import { signOut } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import FeedbackTable from "./adminComponents/feedbackTable";
+
+import { AdminSidebar } from "./adminComponents/adminSidebar";
 
 export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
@@ -63,6 +68,7 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
       </div>
+      <FeedbackTable />
     </div>
   );
 }

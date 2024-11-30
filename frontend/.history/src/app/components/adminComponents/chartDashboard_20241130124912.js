@@ -1,16 +1,49 @@
 ﻿"use client";
+import { signOut } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import FeedbackTable from "./adminComponents/feedbackTable";
 
-export default function AdminDashboard() {
+export default function ChartDashboard() {
+  const [feedbackList, setFeedbackList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 7;
+
+  const router = useRouter();
+  useEffect(() => {
+    fetchFeedback(currentPage);
+  }, [currentPage]);
 
   useEffect(() => {
     fetchStats();
   }, []);
+
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    router.push("/");
+  };
+
+  const fetchFeedback = async (page) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/feedback?page=${page}&limit=${itemsPerPage}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch feedback");
+      }
+      const data = await response.json();
+      setFeedbackList(data.feedback);
+      setTotalPages(Math.ceil(data.total / itemsPerPage));
+    } catch (err) {
+      console.error("Error fetching feedback:", err);
+    }
+  };
 
   const fetchStats = async () => {
     try {
@@ -27,6 +60,10 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   if (loading || stats === null) {

@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import DetailDialog from "./detailDialog";
 
 import { useState } from "react";
-import { useEffect } from "react";
+
 export default function FeedbackTable() {
   const [feedbackList, setFeedbackList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -51,7 +51,7 @@ export default function FeedbackTable() {
     setCurrentPage(page);
   };
   return (
-    <div className="container mx-12 py-8">
+    <div>
       <h2 className="text-2xl font-bold mb-4 ">Feedback List</h2>
       <Table>
         <TableHeader>

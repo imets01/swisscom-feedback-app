@@ -36,7 +36,7 @@ import {
 const items = [
   {
     title: "Dashboard",
-    url: "/admin",
+    url: "#",
     icon: LayoutDashboard,
   },
   {

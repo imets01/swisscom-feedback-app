@@ -51,7 +51,7 @@ export default function FeedbackTable() {
     setCurrentPage(page);
   };
   return (
-    <div className="container mx-12 py-8">
+    <div>
       <h2 className="text-2xl font-bold mb-4 ">Feedback List</h2>
       <Table>
         <TableHeader>

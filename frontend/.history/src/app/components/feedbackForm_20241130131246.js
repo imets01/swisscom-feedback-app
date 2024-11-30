@@ -318,7 +318,6 @@ export default function FeedbackForm() {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="rating_experience"
@@ -354,7 +353,9 @@ export default function FeedbackForm() {
                     ))}
                   </RadioGroup>
                 </FormControl>
-                <FormDescription>1: Very Poor - 5: Excellent</FormDescription>
+                <FormDescription>
+                  Rate your overall experience (1-5)
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -396,7 +397,7 @@ export default function FeedbackForm() {
                   </RadioGroup>
                 </FormControl>
                 <FormDescription>
-                  1: Very Unprofessional - 5: Very Professional
+                  Rate the interviewer&apos;s professionalism (1-5)
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -438,7 +439,7 @@ export default function FeedbackForm() {
                   </RadioGroup>
                 </FormControl>
                 <FormDescription>
-                  1: Very Easy - 5: Very Difficult
+                  Rate the interview difficulty (1-5)
                 </FormDescription>
                 <FormMessage />
               </FormItem>

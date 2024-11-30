@@ -36,12 +36,12 @@ import {
 const items = [
   {
     title: "Dashboard",
-    url: "/admin",
+    url: "/admin/dashboard",
     icon: LayoutDashboard,
   },
   {
     title: "Feedbacks",
-    url: "/admin/feedbacklist",
+    url: "/admin/feedbacks",
     icon: Rows4,
   },
 
