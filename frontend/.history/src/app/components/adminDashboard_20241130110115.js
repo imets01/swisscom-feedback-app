@@ -21,6 +21,15 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar";
+import { SidebarNav, SidebarNavItem } from "@/components/ui/sidebarNav";
+import { ScrollArea } from "@/components/ui/scrollArea";
+import {
+  LayoutDashboard,
+  FileText,
+  Settings,
+  LogOut,
+} from "@/components/icons";
+import Link from "next/link";
 
 export default function AdminDashboard() {
   const [feedbackList, setFeedbackList] = useState([]);
