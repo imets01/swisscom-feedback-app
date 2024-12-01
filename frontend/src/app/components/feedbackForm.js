@@ -39,6 +39,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
+import { useCallback } from "react";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -74,7 +75,7 @@ export default function FeedbackForm() {
     },
   });
 
-  const calculateProgress = () => {
+  const calculateProgress = useCallback(() => {
     const totalFields = 16;
     let filledFields = 0;
     const formValues = form.getValues();
@@ -87,11 +88,11 @@ export default function FeedbackForm() {
 
     const progressPercentage = (filledFields / totalFields) * 100;
     setProgress(progressPercentage);
-  };
+  }, [form]); // form is a dependency, since we use it inside the callback
 
   useEffect(() => {
     form.watch(calculateProgress);
-  }, [form]);
+  }, [form, calculateProgress]);
 
   const onSubmit = async (values) => {
     setIsSubmitting(true);
