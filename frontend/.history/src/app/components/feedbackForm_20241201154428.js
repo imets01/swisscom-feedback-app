@@ -91,7 +91,11 @@ export default function FeedbackForm() {
   };
 
   useEffect(() => {
-    form.watch(calculateProgress);
+    const unsubscribe = form.watch(() => {
+      calculateProgress();
+    });
+
+    return () => unsubscribe();
   }, [form]);
 
   const onSubmit = async (values) => {
@@ -111,7 +115,7 @@ export default function FeedbackForm() {
     }
   };
 
-  if (formSubmitted) {
+  if (!formSubmitted) {
     return (
       <div className="container mx-auto pt-5 pb-10 my-10 max-w-5xl px-14 shadow-xl rounded-3xl">
         <h2 className="text-primary text-3xl font-bold mb-6">

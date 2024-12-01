@@ -33,7 +33,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Toaster, toast } from "sonner";
-import Link from "next/link";
+import { Link } from "next/link";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
@@ -91,7 +91,11 @@ export default function FeedbackForm() {
   };
 
   useEffect(() => {
-    form.watch(calculateProgress);
+    const unsubscribe = form.watch(() => {
+      calculateProgress();
+    });
+
+    return () => unsubscribe();
   }, [form]);
 
   const onSubmit = async (values) => {

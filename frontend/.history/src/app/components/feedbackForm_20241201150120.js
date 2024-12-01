@@ -32,8 +32,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { Toaster, toast } from "sonner";
-import Link from "next/link";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
@@ -62,8 +60,8 @@ const formSchema = z.object({
 
 export default function FeedbackForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState("idle");
   const [progress, setProgress] = useState(0);
-  const [formSubmitted, setFormSubmitted] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -76,12 +74,12 @@ export default function FeedbackForm() {
   });
 
   const calculateProgress = () => {
-    const totalFields = 16;
+    const totalFields = 13;
     let filledFields = 0;
     const formValues = form.getValues();
 
     Object.keys(formValues).forEach((key) => {
-      if (formValues[key] !== "" && formValues[key] !== undefined) {
+      if (formValues[key] && formValues[key] !== "") {
         filledFields++;
       }
     });
@@ -91,7 +89,11 @@ export default function FeedbackForm() {
   };
 
   useEffect(() => {
-    form.watch(calculateProgress);
+    const unsubscribe = form.watch(() => {
+      calculateProgress();
+    });
+
+    return () => unsubscribe();
   }, [form]);
 
   const onSubmit = async (values) => {
@@ -100,37 +102,16 @@ export default function FeedbackForm() {
         "http://localhost:5000/feedback",
         values
       );
-      toast.success(response.data.message);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setFormSubmitted(true);
+      alert(response.data.message);
     } catch (error) {
       console.error("Error submitting feedback:", error);
-      toast.error("There was an error submitting your feedback.");
-    } finally {
-      setIsSubmitting(false); // Set submitting state to false
+      alert("There was an error submitting your feedback.");
     }
   };
 
-  if (formSubmitted) {
-    return (
-      <div className="container mx-auto pt-5 pb-10 my-10 max-w-5xl px-14 shadow-xl rounded-3xl">
-        <h2 className="text-primary text-3xl font-bold mb-6">
-          Thank You for Your Feedback!
-        </h2>
-        <p>Your feedback has been successfully submitted.</p>
-        <p>
-          <Link className="text-blue-500 hover:underline" href="/">
-            Back to main page
-          </Link>
-        </p>
-      </div>
-    );
-  }
-
   return (
-    <div className="container mx-auto pt-5 pb-10 my-10 max-w-5xl px-14 shadow-xl rounded-3xl">
-      <Toaster richColors position="top-center" />
-      <div className="sticky top-0 z-10 pt-5 pb-5">
+    <div className="container mx-auto py-10 my-10 max-w-5xl px-14 shadow-xl rounded-3xl">
+      <div className="sticky top-0 z-10 pt-10">
         <Progress value={progress} />
       </div>
 
@@ -197,7 +178,7 @@ export default function FeedbackForm() {
                 <FormControl>
                   <RadioGroup
                     onValueChange={(value) => field.onChange(value === "true")}
-                    defaultValue={field.value}
+                    defaultValue={field.value ? "true" : "false"}
                     className="flex flex-col space-y-1"
                   >
                     <FormItem className="flex items-center space-x-3 space-y-0">
@@ -456,7 +437,7 @@ export default function FeedbackForm() {
           />
           <FormField
             control={form.control}
-            name="difficulty"
+            name="rating_experience"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>
@@ -509,7 +490,7 @@ export default function FeedbackForm() {
                 <FormControl>
                   <RadioGroup
                     onValueChange={(value) => field.onChange(value === "true")}
-                    defaultValue={field.value}
+                    defaultValue={field.value ? "true" : "false"}
                     className="flex flex-col space-y-1"
                   >
                     <FormItem className="flex items-center space-x-3 space-y-0">
@@ -625,7 +606,7 @@ export default function FeedbackForm() {
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="Social media">Social media</SelectItem>
-                    <SelectItem value="Job fair">Job fair</SelectItem>
+                    <SelectItem value="Jobfair">Job fair</SelectItem>
                     <SelectItem value="Advertisement">Advertisement</SelectItem>
                   </SelectContent>
                 </Select>

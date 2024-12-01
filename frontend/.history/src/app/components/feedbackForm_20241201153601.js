@@ -33,7 +33,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Toaster, toast } from "sonner";
-import Link from "next/link";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
@@ -62,6 +61,7 @@ const formSchema = z.object({
 
 export default function FeedbackForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState("idle");
   const [progress, setProgress] = useState(0);
   const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -91,7 +91,11 @@ export default function FeedbackForm() {
   };
 
   useEffect(() => {
-    form.watch(calculateProgress);
+    const unsubscribe = form.watch(() => {
+      calculateProgress();
+    });
+
+    return () => unsubscribe();
   }, [form]);
 
   const onSubmit = async (values) => {
@@ -101,11 +105,10 @@ export default function FeedbackForm() {
         values
       );
       toast.success(response.data.message);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setFormSubmitted(true);
     } catch (error) {
       console.error("Error submitting feedback:", error);
       toast.error("There was an error submitting your feedback.");
+      setFormSubmitted(true);
     } finally {
       setIsSubmitting(false); // Set submitting state to false
     }
@@ -118,11 +121,6 @@ export default function FeedbackForm() {
           Thank You for Your Feedback!
         </h2>
         <p>Your feedback has been successfully submitted.</p>
-        <p>
-          <Link className="text-blue-500 hover:underline" href="/">
-            Back to main page
-          </Link>
-        </p>
       </div>
     );
   }
@@ -625,7 +623,7 @@ export default function FeedbackForm() {
                   </FormControl>
                   <SelectContent>
                     <SelectItem value="Social media">Social media</SelectItem>
-                    <SelectItem value="Job fair">Job fair</SelectItem>
+                    <SelectItem value="Jobfair">Job fair</SelectItem>
                     <SelectItem value="Advertisement">Advertisement</SelectItem>
                   </SelectContent>
                 </Select>

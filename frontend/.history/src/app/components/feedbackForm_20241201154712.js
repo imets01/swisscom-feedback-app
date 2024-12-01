@@ -91,7 +91,7 @@ export default function FeedbackForm() {
   };
 
   useEffect(() => {
-    form.watch(calculateProgress);
+    calculateProgress();
   }, [form]);
 
   const onSubmit = async (values) => {
