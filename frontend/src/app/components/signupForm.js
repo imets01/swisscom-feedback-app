@@ -51,7 +51,10 @@ export default function SignupForm() {
     try {
       console.log(data);
       toast.success("Account created successfully!");
-      const response = await axios.post("http://localhost:5000/signup", data);
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/signup`,
+        data
+      );
       console.log(response);
       await new Promise((resolve) => setTimeout(resolve, 1500));
       router.push("/");

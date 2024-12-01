@@ -33,7 +33,7 @@ export default function FeedbackTable() {
   const fetchFeedback = async (page) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/feedback?page=${page}&limit=${itemsPerPage}`
+        `${process.env.NEXT_PUBLIC_API_URL}/feedback?page=${page}&limit=${itemsPerPage}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch feedback");

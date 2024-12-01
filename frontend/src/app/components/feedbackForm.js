@@ -97,7 +97,7 @@ export default function FeedbackForm() {
     setIsSubmitting(true);
     try {
       const response = await axios.post(
-        "http://localhost:5000/feedback",
+        `${process.env.NEXT_PUBLIC_API_URL}/feedback`,
         values
       );
       console.log(response);
