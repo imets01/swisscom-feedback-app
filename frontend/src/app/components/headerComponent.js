@@ -4,7 +4,7 @@ import { ThemeSelector } from "./themeSelector";
 
 export default function HeaderBar() {
   return (
-    <header className="bg-background border-b">
+    <header className="bg-card border-b">
       <div className="container px-2 sm:px-4 lg:px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">

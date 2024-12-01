@@ -83,7 +83,7 @@ export default function FeedbackForm() {
   };
 
   return (
-    <div className="container mx-auto py-10 my-24 max-w-5xl px-14 shadow-xl rounded-3xl">
+    <div className="container mx-auto py-10 my-10 max-w-5xl px-14 shadow-xl rounded-3xl">
       <h2 className="text-primary text-3xl font-bold mb-6">
         Submit Your Feedback
       </h2>

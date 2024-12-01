@@ -12,11 +12,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div>
+        <div className="min-h-screen flex flex-col">
           <header>
             <HeaderBar />
           </header>
-          <div>{children}</div>
+          <div className="flex-1 h-auto ">{children}</div>
         </div>
       </body>
     </html>

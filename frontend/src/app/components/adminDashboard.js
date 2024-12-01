@@ -34,11 +34,10 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className=" mx-8 py-8">
+    <div className="min-w-screen mx-8 py-8">
       <h1 className="text-primary text-3xl font-bold mb-6">Admin Dashboard</h1>
-      {/* <Button onClick={handleSignOut}>Log Out</Button> */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Card>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        <Card className="flex flex-col">
           <CardHeader>
             <CardTitle>Total Feedbacks</CardTitle>
           </CardHeader>
@@ -46,7 +45,7 @@ export default function AdminDashboard() {
             <p className="text-3xl font-bold">{stats.total_feedbacks}</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="flex flex-col">
           <CardHeader>
             <CardTitle>Average Rating</CardTitle>
           </CardHeader>
@@ -54,7 +53,7 @@ export default function AdminDashboard() {
             <p className="text-3xl font-bold">{stats.average_rating} / 5</p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="flex flex-col">
           <CardHeader>
             <CardTitle>Most Common Role</CardTitle>
           </CardHeader>
