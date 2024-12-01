@@ -1,8 +1,6 @@
 ﻿"use client";
-import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
@@ -12,19 +10,11 @@ import {
   FormItem,
   FormLabel,
   FormControl,
-  FormDescription,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Toaster, toast } from "sonner";
 import { signIn } from "next-auth/react";
 
@@ -39,7 +29,6 @@ const formSchema = z.object({
 
 export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
   const router = useRouter();
 
   const form = useForm({
@@ -77,8 +66,8 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="flex items-center justify-center pb-36 pt-12">
-      <Card className="w-1/4 border-none shadow-none">
+    <div className="flex items-center justify-center pb-36 pt-12 ">
+      <Card className="w-1/4 border-none shadow-md">
         <CardHeader>
           <CardTitle>Admin Login</CardTitle>
         </CardHeader>

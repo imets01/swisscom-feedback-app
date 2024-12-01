@@ -57,7 +57,7 @@ const formSchema = z.object({
   liked: z.string().or(z.literal("")),
   improved: z.string().or(z.literal("")),
   recommendation: z.enum(["Definitely", "Maybe", "No"]),
-  heard_about: z.enum(["Social media", "Job fair", "Advertisement"]),
+  heard_about: z.string(),
 });
 
 export default function FeedbackForm() {
@@ -71,7 +71,6 @@ export default function FeedbackForm() {
       full_name: "",
       email: "",
       phone: "",
-      heard_about: "",
     },
   });
 
@@ -95,11 +94,14 @@ export default function FeedbackForm() {
   }, [form]);
 
   const onSubmit = async (values) => {
+    setIsSubmitting(true);
     try {
       const response = await axios.post(
         "http://localhost:5000/feedback",
         values
       );
+      console.log(response);
+      form.reset();
       toast.success(response.data.message);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setFormSubmitted(true);
@@ -107,13 +109,13 @@ export default function FeedbackForm() {
       console.error("Error submitting feedback:", error);
       toast.error("There was an error submitting your feedback.");
     } finally {
-      setIsSubmitting(false); // Set submitting state to false
+      setIsSubmitting(false);
     }
   };
 
   if (formSubmitted) {
     return (
-      <div className="container mx-auto pt-5 pb-10 my-10 max-w-5xl px-14 shadow-xl rounded-3xl">
+      <div className="container mx-auto pt-5 pb-10 my-10 max-w-5xl px-14 shadow-md rounded-3xl">
         <h2 className="text-primary text-3xl font-bold mb-6">
           Thank You for Your Feedback!
         </h2>
@@ -128,7 +130,7 @@ export default function FeedbackForm() {
   }
 
   return (
-    <div className="container mx-auto pt-5 pb-10 my-10 max-w-5xl px-14 shadow-xl rounded-3xl">
+    <div className="container bg-card mx-auto pt-5 pb-10 my-10 max-w-5xl px-14 shadow-md rounded-3xl">
       <Toaster richColors position="top-center" />
       <div className="sticky top-0 z-10 pt-5 pb-5">
         <Progress value={progress} />
@@ -613,7 +615,10 @@ export default function FeedbackForm() {
             name="heard_about"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>How did you hear about this opportunity?</FormLabel>
+                <FormLabel>
+                  How did you hear about this opportunity?
+                  <span className="text-red-500"> *</span>
+                </FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}

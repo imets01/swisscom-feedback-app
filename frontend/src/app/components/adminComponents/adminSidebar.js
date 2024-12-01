@@ -2,8 +2,6 @@
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {
-  SidebarProvider,
-  SidebarTrigger,
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -21,7 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { User2, ChevronUp, ChevronDown } from "lucide-react";
+import { User2, ChevronDown } from "lucide-react";
 import {
   Calendar,
   Home,
@@ -32,7 +30,6 @@ import {
   Rows4,
 } from "lucide-react";
 
-// Menu items.
 const items = [
   {
     title: "Dashboard",
@@ -45,11 +42,11 @@ const items = [
     icon: Rows4,
   },
 
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-  },
+  // {
+  //   title: "Settings",
+  //   url: "#",
+  //   icon: Settings,
+  // },
 ];
 
 export function AdminSidebar() {

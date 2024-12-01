@@ -1,6 +1,6 @@
 ﻿import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { Bar, Pie, Scatter } from "react-chartjs-2"; // Import Bar chart from react-chartjs-2
+import { Bar, Pie, Scatter } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,7 +12,7 @@ import {
   Tooltip,
   Legend,
   ArcElement,
-} from "chart.js"; // Required chart.js components
+} from "chart.js";
 
 ChartJS.register(
   CategoryScale,
@@ -54,8 +54,7 @@ export function AdminCharts({ stats }) {
       {
         label: "Interview Mode Count",
         data: sortedInterviewModes.map(([, count]) => count),
-        backgroundColor: ["#086adb", "#d12", "#a63297"],
-        borderColor: ["#086adb", "#d12", "#a63297"],
+        backgroundColor: ["#086adb", "#e1195f", "#a63297"],
 
         borderWidth: 1,
       },
@@ -71,7 +70,7 @@ export function AdminCharts({ stats }) {
           x: item.rating_experience,
           y: item.difficulty,
         })),
-        backgroundColor: "#086adb",
+        backgroundColor: "rgba(8, 106, 219, 0.1)",
         borderColor: "#086adb",
         pointRadius: 8,
       },
@@ -89,7 +88,7 @@ export function AdminCharts({ stats }) {
       {
         label: "How People Heard About Us",
         data: sortedHeardAbout.map(([, count]) => count),
-        backgroundColor: "#086adb", // Bar color
+        backgroundColor: "#086adb",
         borderColor: "#086adb",
         borderRadius: 5,
         borderWidth: 1,
@@ -97,9 +96,9 @@ export function AdminCharts({ stats }) {
     ],
   };
 
-  function ChartCard({ title, children, className = "" }) {
+  function ChartCard({ title, children }) {
     return (
-      <Card className={className}>
+      <Card className="shadow-md">
         <CardHeader className="p-4">
           <CardTitle className="text-lg font-semibold">{title}</CardTitle>
         </CardHeader>

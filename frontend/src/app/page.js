@@ -11,7 +11,6 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import LoginPage from "./login/page";
-import Header from "./components/headerComponent";
 
 export default function Home() {
   return (

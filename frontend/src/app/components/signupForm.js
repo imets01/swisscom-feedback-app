@@ -22,7 +22,6 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-  CardFooter,
 } from "@/components/ui/card";
 import { Toaster, toast } from "sonner";
 

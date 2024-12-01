@@ -30,7 +30,7 @@ export default function AdminDashboard() {
   };
 
   if (loading || stats === null) {
-    return <div>Loading...</div>;
+    return <div className="p-10">Loading...</div>;
   }
 
   return (

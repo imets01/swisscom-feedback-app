@@ -16,7 +16,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-import { Button } from "@/components/ui/button";
 import DetailDialog from "./detailDialog";
 
 import { useState } from "react";
@@ -25,7 +24,7 @@ export default function FeedbackTable() {
   const [feedbackList, setFeedbackList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const itemsPerPage = 7;
+  const itemsPerPage = 20;
 
   useEffect(() => {
     fetchFeedback(currentPage);
@@ -40,6 +39,7 @@ export default function FeedbackTable() {
         throw new Error("Failed to fetch feedback");
       }
       const data = await response.json();
+      console.log(data);
       setFeedbackList(data.feedback);
       setTotalPages(Math.ceil(data.total / itemsPerPage));
     } catch (err) {
@@ -58,6 +58,7 @@ export default function FeedbackTable() {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
+              <TableHead>Email</TableHead>
               <TableHead>Role Interviewed For</TableHead>
               <TableHead>Date of Interview</TableHead>
               <TableHead>Overall Experience Rating</TableHead>
@@ -67,7 +68,8 @@ export default function FeedbackTable() {
           <TableBody>
             {feedbackList.map((feedback) => (
               <TableRow key={feedback.id}>
-                <TableCell>{feedback.full_name || "Anonymous"}</TableCell>
+                <TableCell>{feedback.full_name || "-"}</TableCell>
+                <TableCell>{feedback.email || "-"}</TableCell>
                 <TableCell>{feedback.role}</TableCell>
                 <TableCell>
                   {new Date(feedback.interview_date).toLocaleDateString()}
@@ -80,35 +82,39 @@ export default function FeedbackTable() {
             ))}
           </TableBody>
         </Table>
-        <div className="mt-4">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                  disabled={currentPage === 1}
-                />
-              </PaginationItem>
-              {[...Array(totalPages)].map((_, index) => (
-                <PaginationItem key={index}>
-                  <PaginationLink
-                    onClick={() => handlePageChange(index + 1)}
-                    isActive={currentPage === index + 1}
-                  >
-                    {index + 1}
-                  </PaginationLink>
+        <div className="sticky bottom-0 py-5 flex justify-center">
+          <div className="w-fit">
+            <Pagination className="bg-card rounded-md p-1">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() =>
+                      handlePageChange(Math.max(1, currentPage - 1))
+                    }
+                    disabled={currentPage === 1}
+                  />
                 </PaginationItem>
-              ))}
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() =>
-                    handlePageChange(Math.min(totalPages, currentPage + 1))
-                  }
-                  disabled={currentPage === totalPages}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+                {[...Array(totalPages)].map((_, index) => (
+                  <PaginationItem key={index}>
+                    <PaginationLink
+                      onClick={() => handlePageChange(index + 1)}
+                      isActive={currentPage === index + 1}
+                    >
+                      {index + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() =>
+                      handlePageChange(Math.min(totalPages, currentPage + 1))
+                    }
+                    disabled={currentPage === totalPages}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
         </div>
       </div>
     </div>

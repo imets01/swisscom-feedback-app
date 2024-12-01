@@ -10,17 +10,15 @@ export default function HeaderBar() {
           <div className="flex items-center">
             <Link href="/">
               <Image
-                src="/650a16197f1c9d8e2dc7593a_SC-Lifeform.gif" // Path to the gif in the public folder
-                alt="Lifeform Animation" // Alt text for accessibility
-                width={40} // Set the width of the GIF
-                height={40} // Set the height of the GIF
+                src="/650a16197f1c9d8e2dc7593a_SC-Lifeform.gif"
+                alt="Lifeform Animation"
+                width={40}
+                height={40}
               />
             </Link>
           </div>
-          {/* Displaying GIF with Image component */}
-          <div className="flex items-center">
-            <ThemeSelector />
-          </div>
+
+          <div className="flex items-center">{/* <ThemeSelector /> */}</div>
         </div>
       </div>
     </header>

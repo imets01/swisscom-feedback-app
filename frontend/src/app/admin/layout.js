@@ -4,7 +4,7 @@ import { AdminSidebar } from "../components/adminComponents/adminSidebar";
 import { getServerSession } from "next-auth";
 
 export default async function Layout({ children }) {
-  const session = await getServerSession(); // Check session on the server
+  const session = await getServerSession();
   console.log(session);
 
   if (!session) {
