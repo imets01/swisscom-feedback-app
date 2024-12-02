@@ -97,10 +97,9 @@ export default function FeedbackForm() {
   const onSubmit = async (values) => {
     setIsSubmitting(true);
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/feedback`,
-        values
-      );
+      const API_BASE_URL =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const response = await axios.post(`${API_BASE_URL}/feedback`, values);
       console.log(response);
       form.reset();
       toast.success(response.data.message);

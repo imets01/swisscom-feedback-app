@@ -32,8 +32,10 @@ export default function FeedbackTable() {
 
   const fetchFeedback = async (page) => {
     try {
+      const API_BASE_URL =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/feedback?page=${page}&limit=${itemsPerPage}`
+        `${API_BASE_URL}/feedback?page=${page}&limit=${itemsPerPage}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch feedback");
@@ -43,7 +45,7 @@ export default function FeedbackTable() {
       setFeedbackList(data.feedback);
       setTotalPages(Math.ceil(data.total / itemsPerPage));
     } catch (err) {
-      console.error("Error fetching feedback:", err);
+      console.error("Error fetching feedback: ", err);
     }
   };
 

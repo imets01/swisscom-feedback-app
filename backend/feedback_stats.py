@@ -5,8 +5,8 @@ import os
 
 
 def get_db():
-    # db_path = os.getenv('DATABASE_PATH', r"C:\Users\Ákos\MyProjects\Swisscom_Assignment\swisscom-feedback-app\feedback.db")
-    db_path = os.getenv('DATABASE_PATH', 'feedback.db')
+    #db_path = 'feedback.db'
+    db_path = '/app/db/feedback.db'
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     return conn

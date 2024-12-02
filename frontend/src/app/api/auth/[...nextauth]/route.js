@@ -11,7 +11,10 @@ export const authOptions = {
       },
       async authorize(credentials) {
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+          const API_BASE_URL =
+            process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+          console.log(API_BASE_URL);
+          const res = await fetch(`${API_BASE_URL}/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -21,7 +24,6 @@ export const authOptions = {
           });
 
           const user = await res.json();
-
           if (res.ok && user.token) {
             return user;
           } else {

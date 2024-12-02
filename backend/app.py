@@ -11,11 +11,13 @@ import os
 
 app = Flask(__name__)
 CORS(app)
-CORS(app, origins=os.getenv('CORS_ORIGINS', 'http://localhost:3000'))
+CORS(app, resources={r"/*": {"origins": "*"}})
+# CORS(app, origins=["http://localhost:3000", "http://frontend:3000"])
+
 api = Api(app)
 
 # JWT setup
-app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'mGgh1kMZRp+cdsOmI1mIJpC+20kHZIeLogoGCj5Z/YY=')
+app.config['JWT_SECRET_KEY'] = 'mGgh1kMZRp+cdsOmI1mIJpC+20kHZIeLogoGCj5Z/YY='
 
 jwt = JWTManager(app)
 
@@ -47,8 +49,8 @@ user_model = api.model('Signup', {
 })
 
 def get_db():
-    # db_path = os.getenv('DATABASE_PATH', r"C:\Users\Ákos\MyProjects\Swisscom_Assignment\swisscom-feedback-app\feedback.db")
-    db_path = os.getenv('DATABASE_PATH', 'feedback.db')
+    #db_path = 'feedback.db'
+    db_path = '/app/db/feedback.db'
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     return conn
@@ -202,6 +204,8 @@ class Login(Resource):
         password = data.get('password')
         conn = get_db()
         user = conn.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
+        print(user)
+
         is_valid = check_password_hash(user['password'], password)
 
         if user and is_valid:
@@ -233,7 +237,6 @@ api.add_resource(FeedbackStats, '/stats')
 
 if __name__ == '__main__':
     init_db()
-    app.run(host='0.0.0.0', port=5000, debug=True)
-
-    # app.run(host='0.0.0.0', port=5000, debug=os.getenv('FLASK_DEBUG', 'false').lower() == 'true')
+    #app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)
 
