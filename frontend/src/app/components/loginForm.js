@@ -44,10 +44,21 @@ export default function LoginForm() {
     console.log(data);
     try {
       console.log(data);
-      const result = await signIn("credentials", {
-        redirect: false,
-        email: data.email,
-        password: data.password,
+      // const result = await signIn("credentials", {
+      //   redirect: false,
+      //   email: data.email,
+      //   password: data.password,
+      // });
+      const API_BASE_URL =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      console.log(API_BASE_URL);
+      const result = await fetch(`${API_BASE_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
       });
       console.log(result);
       if (result.error) {
